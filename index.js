@@ -3,12 +3,14 @@ const github = require('@actions/github');
 
 
 try {
-    const committer = github.context.actor?.toLowerCase();
+  const committer = github.context.actor?.toLowerCase();
 
-    const inputJSON = JSON.parse(core.getInput('user-mapping'));
-    const githubToSlackId = new Map(Object.entries(inputJSON).map(([key, value]) => ([key.toLocaleLowerCase(), value])))
+  const inputJSON = JSON.parse(core.getInput('user-mapping'));
+  const fallback = core.getInput('fallback');
 
-    const output = githubToSlackId.get(committer) || githubToSlackId.get('fallback');
+  const githubToSlackId = new Map(Object.entries(inputJSON).map(([key, value]) => ([key.toLocaleLowerCase(), value])))
+
+  const output = githubToSlackId.get(committer) || githubToSlackId.get('fallback') || fallback;
 
     if (!output) {
         throw new Error(`Could not determine the slack username for ${committer}. Verify the "user-mapping" is correct:\n${JSON.stringify(inputJSON, undefined, 2)}`);

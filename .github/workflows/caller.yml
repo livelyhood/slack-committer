@@ -13,7 +13,7 @@ jobs:
   notify:
     needs: [ do-something ]
     if: ${{ always() && ( contains(needs.*.result, 'failure') || contains(needs.*.result, 'skipped') ) }}
-    uses: penchef/slack-committer/.github/workflows/notify.yml@main
+    uses: livelyhood/slack-committer/.github/workflows/notify.yml@main
     secrets: inherit
     with:
       failure: true

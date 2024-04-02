@@ -4,6 +4,9 @@ branding:
   icon: "message-square"
   color: "purple"
 inputs:
+  fallback:
+    description: 'fallback user'
+    required: false
   user-mapping:
     description: 'JSON mapping of github username to slack user IDs (see https://www.workast.com/help/article/how-to-find-a-slack-user-id/ )'
     required: true

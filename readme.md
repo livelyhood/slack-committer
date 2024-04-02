@@ -14,7 +14,7 @@ Based on [spatie/slack-committer](https://github.com/spatie/slack-committer)
 ```yaml
 - name: Resolve slack committer with JSON provided as string
   id: slack-committer
-  uses: penchef/slack-committer@v1.2
+  uses: livelyhood/slack-committer@main
     with:
     # JSON mapping from Github user to slack userID or channelID. "fallback" is used when no user was found.
     user-mapping: >
@@ -34,7 +34,7 @@ Note: this won't work with reusable workflows.
   run:  echo users=$(jq . users.json) >> $GITHUB_OUTPUT
 - name: Resolve slack committer
   id: slack-committer
-  uses: penchef/slack-committer@v1.2
+  uses: livelyhood/slack-committer@main
   with:
     user-mapping: ${{ steps.read-users.outputs.users }}
 ```
@@ -80,5 +80,3 @@ within one reusable workflow
 1. create a new re-usable workflow by copying [notify.yml](./.github/workflows/notify.yml), either within the repo you want to use it or within a public repository. See also [re-useable workflow limitation](https://docs.github.com/en/actions/using-workflows/reusing-workflows#limitations)
 2. create a github user mapping JSON, e.g. [users.json](users.json).
 3. create a new job within the workflow you want to report on, e.g. see [caller.yml](.github/workflows/caller.yml)
-
-
