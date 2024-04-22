@@ -42,7 +42,7 @@ jobs:
           echo "count=${COUNT}" >> "${GITHUB_OUTPUT}"
       - name: 'Post PR to #alerts-vulnerabilities'
         if: ${{ steps.count-vulnerabilities.outputs.count > 0 }}
-        uses: slackapi/slack-github-action@v1.25.0
+        uses: slackapi/slack-github-action@v1.26.0
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           TITLE: ${{ format('Open vulnerabilities in {0}{1} {2}', github.event.repository.name, ':', steps.read-maintainers.outputs.maintainers) }}
