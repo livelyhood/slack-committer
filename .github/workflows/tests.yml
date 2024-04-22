@@ -15,7 +15,7 @@ jobs:
         id: slack-committer
         uses: penchef/slack-committer@v1.2
         with:
-          user-mapping: ${{ steps.read-users.outputs.users }}
+          user-mapping: ${{ fromJSON(steps.read-users.outputs.users) }}
       - run: echo ${{ steps.slack-committer.outputs.username }}
       - name: Resolve slack committer
         id: slack-committer-string
@@ -26,5 +26,5 @@ jobs:
               "Penchef": "UUSAQBVDZ",
               "fallback": "XYZXYZXYZ"
             }
-      - run: echo ${{ steps.slack-committer-string.outputs.username }}
-
+      - run: |
+          echo ${{ steps.slack-committer-string.outputs.username }}
