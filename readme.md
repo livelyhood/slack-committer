@@ -42,30 +42,55 @@ Note: this won't work with reusable workflows.
 ## Later in your workflow:
 
 ```yml
-- name: Slack Notification
-  if: always() # failure()
-  uses: rtCamp/action-slack-notify@v2
+- name: Notify
+  id: slack
+  uses: slackapi/slack-github-action@v1.25.0
   env:
-    SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-    SLACK_MESSAGE: "You should fix this: ${{ steps.slack-committer.outputs.username }}"
-# OR
-- name: Notify slack fail
-  env:
-    SLACK_BOT_TOKEN: ${{ secrets.SLACK_TOKEN }}
-  if: always() # failure()
-  uses: voxmedia/github-action-slack-notify-build@v1.5.0
+    SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
   with:
-    channel_id: ${{ steps.slack-committer.outputs.username }}
-    status: FAILED
-    color: danger
-# OR
-- name: Notify slack
-  if: always() # failure()
-  env:
-    SLACK_BOT_TOKEN: ${{ secrets.SLACK_TOKEN }}
-  uses: pullreminders/slack-action@master
-  with:
-    args: '{\"channel\":\"${{ steps.slack-committer.outputs.username }}"\",\"text\":\"Hello world\"}'
+    # Slack channel id, channel name, or user id to post message.
+    # See also: https://api.slack.com/methods/chat.postMessage#channels
+    channel-id: ${{ inputs.notifyee || steps.slack-committer.outputs.username }}
+    # see slack's attachment api: https://api.slack.com/reference/messaging/attachments
+    payload: |
+      {
+         "attachments": [
+              {
+                  "mrkdwn_in": ["fields", "title"],
+                  "color": "${{ ( (inputs.failure || contains(inputs.status, 'fail')) && '#a63647' ) || '#36a67d' }}",
+                  "title": "${{ env.TITLE }}",
+                  "title_link": "${{ env.TITLE_LINK }}",
+                  "fields": [
+                    {
+                      "title": "Repo",
+                      "value": "<${{ github.event.repository.html_url }}|${{ github.event.repository.name }}>",
+                      "short": true
+                    },
+                    {
+                      "title": "Workflow",
+                      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|${{ github.workflow }}>",
+                      "short": true
+                    },
+                    {
+                      "title": "Status",
+                      "value": "${{ inputs.status || (inputs.failure && 'FAILED') || (!inputs.failure && 'SUCCESS') }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Ref",
+                      "value": "<${{ github.event.pull_request.html_url || github.event.head_commit.url }}|${{ github.head_ref || github.ref_name }}>",
+                      "short": true
+                    },
+                    {
+                      "title": "Event",
+                      "value": "${{ github.event_name }}",
+                      "short": true
+                    }
+                  ]
+              }
+            ]
+      }
+
 ```
 
 ## Advance usage:
