@@ -18,7 +18,7 @@ jobs:
           echo "maintainers=$(cat maintainers.json | jq '.[] | to_entries | .[].value' | jq --slurp -r '. | join(" ")')" >> "$GITHUB_OUTPUT"
       - name: 'Post PR to #dev-pr'
         if: always() # continue even if read-maintainers failed for some reason
-        uses: slackapi/slack-github-action@v1.25.0
+        uses: slackapi/slack-github-action@v1.26.0
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           MAINTAINERS: ${{ steps.read-maintainers.outputs.maintainers }}
